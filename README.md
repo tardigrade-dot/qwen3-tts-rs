@@ -200,6 +200,39 @@ cargo run --release -- \
     --output output.wav
 ```
 
+##### Max Tokens (default: 2048)
+
+If you want to generate long form text you will need to adjust the `--max-tokens`.
+
+The "Hz" in the model names literally means "tokens per second".
+
+- v1 25Hz = 25 tokens/second = 40ms per token
+- v2 12Hz = 12.5 tokens/second = 80ms per token
+
+Given: `tokens = duration_seconds × token_rate_hz`
+
+| max_tokens | 12Hz(v2)| 25Hz(v1)|
+|------------|-------- |---------|
+| 2,000      | 2m 40s  | 1m 20s  |
+| 4,000      | 5m 20s  | 2m 40s  |
+| 8,000      | 10m     | 5m 20s  |
+| 16,000     | 21m     | 10m     |
+| 32,000     | 42m     | 20m     |
+
+##### Per Page
+
+**Reading time for 12 pages**
+- Average: 500 words per page
+- Speech rate: 150 words per minute (conversational pace)
+
+| Pages | Words  | Duration | 12Hz    | 25Hz    |
+|-------|------- |----------|---------|---------|
+| 1     | 500    | 3.3 min  | 2,500   | 5,000   |
+| 5     | 2,500  | 17 min   | 12,750  | 25,500  |
+| 12    | 6,000  | 40 min   | 30,000  | 60,000  |
+| 25    | 12,500 | 83 min   | 62,250  | 124,500 |
+```
+
 #### Subtalker Parameters (Acoustic Token Generation)
 
 Control the code predictor that generates codebooks 1-31:
