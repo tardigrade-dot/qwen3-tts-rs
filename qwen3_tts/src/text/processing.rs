@@ -62,17 +62,12 @@ pub fn normalize_text(text: &str) -> String {
         .replace('\u{2013}', "-") // En dash → hyphen
         .replace('\u{2026}', "...") // Horizontal ellipsis → three periods
         // Unicode whitespace → ASCII space
-        .replace('\u{00A0}', " ") // Non-breaking space
-        .replace('\u{202F}', " ") // Narrow no-break space
-        .replace('\u{3000}', " ") // Ideographic space (CJK)
+        .replace(['\u{00A0}', '\u{202F}', '\u{3000}'], " ")
         // Normalize line endings
         .replace("\r\n", "\n") // Windows CRLF → LF
         .replace('\r', "\n") // Old Mac CR → LF
         // Remove zero-width characters that break tokenization
-        .replace('\u{200B}', "") // Zero-width space
-        .replace('\u{200C}', "") // Zero-width non-joiner
-        .replace('\u{200D}', "") // Zero-width joiner
-        .replace('\u{FEFF}', "") // BOM / zero-width no-break space
+        .replace(['\u{200B}', '\u{200C}', '\u{200D}', '\u{FEFF}'], "")
 }
 
 /// Special token IDs used by Qwen3-TTS.
