@@ -3,6 +3,10 @@
 //! Provides tokenization and chat template formatting for Qwen3-TTS.
 //! Uses the Qwen2 tokenizer vocabulary with special TTS tokens.
 //!
+//! Text is automatically normalized before tokenization to handle
+//! typographic characters (smart quotes, em-dashes, etc.) that may
+//! not be well-represented in the model's training data.
+//!
 //! # Batch Processing
 //!
 //! The processor supports batch tokenization with automatic left-padding:
@@ -22,6 +26,54 @@
 
 use std::path::Path;
 use tokenizers::Tokenizer;
+
+/// Normalize text for consistent tokenization and better TTS output.
+///
+/// This ensures parity with Python's text handling, preventing degraded audio
+/// quality when text contains smart/curly quotes, em-dashes, or other
+/// typographic characters from word processors that may not be well-represented
+/// in the model's training data.
+///
+/// # Normalizations
+///
+/// **Typographic characters:**
+/// - Smart single quotes (`'` `'`) → ASCII apostrophe (`'`)
+/// - Smart double quotes (`"` `"`) → ASCII quote (`"`)
+/// - Em dash (`—`) → double hyphen (`--`)
+/// - En dash (`–`) → hyphen (`-`)
+/// - Horizontal ellipsis (`…`) → three periods (`...`)
+///
+/// **Whitespace:**
+/// - Non-breaking space → regular space
+/// - Narrow no-break space → regular space
+/// - Ideographic space → regular space
+/// - CRLF/CR → LF (Unix line endings)
+///
+/// **Zero-width characters (removed):**
+/// - Zero-width space
+/// - Zero-width non-joiner/joiner
+/// - Byte order mark (BOM)
+pub fn normalize_text(text: &str) -> String {
+    text
+        // Typographic quotes and punctuation
+        .replace(['\u{2019}', '\u{2018}'], "'") // Smart single quotes → apostrophe
+        .replace(['\u{201C}', '\u{201D}'], "\"") // Smart double quotes → quote
+        .replace('\u{2014}', "--") // Em dash → double hyphen
+        .replace('\u{2013}', "-") // En dash → hyphen
+        .replace('\u{2026}', "...") // Horizontal ellipsis → three periods
+        // Unicode whitespace → ASCII space
+        .replace('\u{00A0}', " ") // Non-breaking space
+        .replace('\u{202F}', " ") // Narrow no-break space
+        .replace('\u{3000}', " ") // Ideographic space (CJK)
+        // Normalize line endings
+        .replace("\r\n", "\n") // Windows CRLF → LF
+        .replace('\r', "\n") // Old Mac CR → LF
+        // Remove zero-width characters that break tokenization
+        .replace('\u{200B}', "") // Zero-width space
+        .replace('\u{200C}', "") // Zero-width non-joiner
+        .replace('\u{200D}', "") // Zero-width joiner
+        .replace('\u{FEFF}', "") // BOM / zero-width no-break space
+}
 
 /// Special token IDs used by Qwen3-TTS.
 #[derive(Debug, Clone, Copy)]
@@ -407,6 +459,9 @@ impl TextProcessor {
 
     /// Tokenize text into token IDs.
     ///
+    /// Text is automatically normalized before tokenization to handle
+    /// typographic characters (smart quotes, em-dashes, etc.).
+    ///
     /// # Arguments
     /// * `text` - The text to tokenize
     ///
@@ -416,9 +471,11 @@ impl TextProcessor {
     /// # Panics
     /// Panics if the tokenizer fails to encode the text.
     pub fn tokenize(&self, text: &str) -> Vec<u32> {
+        // Normalize typographic characters before tokenization
+        let normalized = normalize_text(text);
         match &self.tokenizer {
             Some(tokenizer) => {
-                let encoding = tokenizer.encode(text, false).unwrap_or_else(|e| {
+                let encoding = tokenizer.encode(normalized.as_str(), false).unwrap_or_else(|e| {
                     panic!(
                         "Failed to encode text: {:?}\n\
                             This may indicate that special tokens like <|im_start|> or <|im_end|> \
@@ -440,6 +497,9 @@ impl TextProcessor {
 
     /// Tokenize text with error handling.
     ///
+    /// Text is automatically normalized before tokenization to handle
+    /// typographic characters (smart quotes, em-dashes, etc.).
+    ///
     /// # Arguments
     /// * `text` - The text to tokenize
     ///
@@ -449,9 +509,11 @@ impl TextProcessor {
         &self,
         text: &str,
     ) -> Result<Vec<u32>, Box<dyn std::error::Error + Send + Sync>> {
+        // Normalize typographic characters before tokenization
+        let normalized = normalize_text(text);
         match &self.tokenizer {
             Some(tokenizer) => {
-                let encoding = tokenizer.encode(text, false)?;
+                let encoding = tokenizer.encode(normalized.as_str(), false)?;
                 Ok(encoding.get_ids().to_vec())
             }
             None => Err("No tokenizer loaded".into()),
@@ -746,6 +808,44 @@ impl Default for TextProcessor {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_normalize_text() {
+        // Smart quotes
+        assert_eq!(normalize_text("\u{2018}hello\u{2019}"), "'hello'");
+        assert_eq!(normalize_text("\u{201C}world\u{201D}"), "\"world\"");
+
+        // Dashes
+        assert_eq!(normalize_text("one\u{2013}two"), "one-two"); // en-dash
+        assert_eq!(normalize_text("one\u{2014}two"), "one--two"); // em-dash
+
+        // Ellipsis
+        assert_eq!(normalize_text("wait\u{2026}"), "wait...");
+
+        // Unicode whitespace
+        assert_eq!(normalize_text("hello\u{00A0}world"), "hello world"); // NBSP
+        assert_eq!(normalize_text("hello\u{202F}world"), "hello world"); // narrow NBSP
+        assert_eq!(normalize_text("hello\u{3000}world"), "hello world"); // ideographic space
+
+        // Line endings
+        assert_eq!(normalize_text("a\r\nb"), "a\nb"); // CRLF
+        assert_eq!(normalize_text("a\rb"), "a\nb"); // CR
+
+        // Zero-width characters (removed)
+        assert_eq!(normalize_text("hel\u{200B}lo"), "hello"); // ZWSP
+        assert_eq!(normalize_text("hel\u{FEFF}lo"), "hello"); // BOM
+        assert_eq!(normalize_text("hel\u{200C}lo"), "hello"); // ZWNJ
+        assert_eq!(normalize_text("hel\u{200D}lo"), "hello"); // ZWJ
+
+        // Combined typographic
+        assert_eq!(
+            normalize_text("He said, \u{201C}It\u{2019}s\u{2014}well\u{2026}\u{201D}"),
+            "He said, \"It's--well...\""
+        );
+
+        // ASCII passthrough
+        assert_eq!(normalize_text("Hello, world!"), "Hello, world!");
+    }
 
     #[test]
     fn test_chat_templates() {
