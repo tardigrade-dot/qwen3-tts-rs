@@ -2,6 +2,14 @@ use clap::{Parser, Subcommand};
 use qwen3_tts::io::{GenerationArgs, IoArgs, ModelArgs, SynthesisMode, VoiceArgs};
 use std::path::PathBuf;
 
+fn default_device() -> String {
+    if cfg!(target_os = "macos") {
+        "metal".to_string()
+    } else {
+        "cuda".to_string()
+    }
+}
+
 /// Qwen3-TTS Command Line Interface
 ///
 /// Generate speech from text using the Qwen3-TTS model.
@@ -46,8 +54,8 @@ pub struct Cli {
     #[arg(short, long, default_value = "auto")]
     pub language: String,
 
-    /// Device to use (cpu, cuda, metal)
-    #[arg(long, default_value = "cuda")]
+    /// Device to use (cpu, cuda, metal).
+    #[arg(long, default_value_t = default_device())]
     pub device: String,
 
     /// Data type (f32, f16, bf16)
