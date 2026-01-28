@@ -1,4 +1,4 @@
-# Candle Qwen3-TTS
+# Qwen3-TTS-RS
 
 A Rust implementation of the Qwen3-TTS text-to-speech model using the [Candle](https://github.com/huggingface/candle) ML framework.
 
