@@ -1,0 +1,36 @@
+[package]
+name = "qwen3_tts_cli"
+version = "0.1.0"
+edition = "2024"
+description = "Command-line interface for Qwen3-TTS text-to-speech synthesis"
+repository = "https://github.com/danielclough/qwen3-tts"
+keywords = ["tts", "speech-synthesis", "cli"]
+categories = ["command-line-utilities"]
+license = "MIT OR Apache-2.0"
+
+[[bin]]
+name = "qwen3-tts"
+path = "src/main.rs"
+
+[dependencies]
+qwen3_tts = { path = "../qwen3_tts" }
+candle-core = "0.9"
+clap = { version = "4", features = ["derive"] }
+anyhow = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+hf-hub = "0.4"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[features]
+default = []
+accelerate = ["qwen3_tts/accelerate"]
+cuda = ["qwen3_tts/cuda"]
+cudnn = ["qwen3_tts/cudnn"]
+flash-attn = ["qwen3_tts/flash-attn"]
+mkl = ["qwen3_tts/mkl"]
+nccl = ["qwen3_tts/nccl"]
+audio-loading = ["qwen3_tts/audio-loading"]
+metal = ["qwen3_tts/metal"]
+timing = ["qwen3_tts/timing"]

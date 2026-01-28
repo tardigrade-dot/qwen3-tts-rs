@@ -1,0 +1,12 @@
+target/
+
+# wildcards
+.*
+*.md
+*.txt
+*.wav
+
+# allow
+!.gitignore
+!README.md
+!TESTS.md
