@@ -438,9 +438,9 @@ impl AttentiveStatisticsPooling {
         // Convert mask to U32 for where_cond and expand to match attention shape
         let mask_u32 = mask.to_dtype(candle_core::DType::U32)?;
         let mask_expanded = mask_u32.expand((batch_size, attention_channels, seq_length))?;
-        let neg_inf =
-            Tensor::full(f32::NEG_INFINITY, attention.shape(), device)?.to_dtype(dtype)?;
-        let attention = mask_expanded.where_cond(&attention, &neg_inf)?;
+        let neg_inf = Tensor::full(f32::NEG_INFINITY, attention.shape(), device)?;
+        let attention_f32 = attention.to_dtype(candle_core::DType::F32)?;
+        let attention = mask_expanded.where_cond(&attention_f32, &neg_inf)?.to_dtype(dtype)?;
 
         // Softmax over time dimension
         let attention = candle_nn::ops::softmax_last_dim(&attention)?;

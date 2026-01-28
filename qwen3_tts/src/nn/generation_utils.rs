@@ -108,9 +108,9 @@ pub fn create_attention_mask_from_lengths(
             Tensor::full(0.5f64, (max_len, max_len), device)?.to_dtype(candle_core::DType::F32)?;
         let combined_bool = combined.gt(&half)?;
         let neg_inf =
-            Tensor::full(f64::NEG_INFINITY, (max_len, max_len), device)?.to_dtype(dtype)?;
-        let zero = Tensor::zeros((max_len, max_len), dtype, device)?;
-        let final_mask = combined_bool.where_cond(&zero, &neg_inf)?;
+            Tensor::full(f64::NEG_INFINITY, (max_len, max_len), device)?.to_dtype(candle_core::DType::F32)?;
+        let zero = Tensor::zeros((max_len, max_len), candle_core::DType::F32, device)?;
+        let final_mask = combined_bool.where_cond(&zero, &neg_inf)?.to_dtype(dtype)?;
 
         batch_masks.push(final_mask.unsqueeze(0)?);
     }
