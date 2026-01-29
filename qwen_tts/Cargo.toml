@@ -7,6 +7,7 @@ repository = "https://github.com/danielclough/qwen3-tts-rs"
 keywords = ["tts", "speech-synthesis", "machine-learning", "qwen"]
 categories = ["science"]
 license = "MIT OR Apache-2.0"
+readme = "../README.md"
 
 [dependencies]
 candle-core = { version = "0.9" }

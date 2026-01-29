@@ -7,6 +7,7 @@ repository = "https://github.com/danielclough/qwen3-tts-rs"
 keywords = ["tts", "speech-synthesis", "cli"]
 categories = ["command-line-utilities"]
 license = "MIT OR Apache-2.0"
+readme = "../README.md"
 
 [[bin]]
 name = "qwen-tts"
