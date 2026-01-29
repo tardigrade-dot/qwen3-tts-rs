@@ -1,6 +1,6 @@
 [package]
 name = "qwen_tts_cli"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 description = "Command-line interface for Qwen3-TTS text-to-speech synthesis"
 repository = "https://github.com/danielclough/qwen3-tts-rs"
@@ -14,7 +14,7 @@ name = "qwen-tts"
 path = "src/main.rs"
 
 [dependencies]
-qwen_tts = { version = "0.1.0", path = "../qwen_tts" }
+qwen_tts = { version = "0.1.1", path = "../qwen_tts" }
 candle-core = "0.9"
 clap = { version = "4", features = ["derive"] }
 anyhow = "1"

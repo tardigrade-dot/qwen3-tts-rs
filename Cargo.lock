@@ -2476,7 +2476,7 @@ dependencies = [
 
 [[package]]
 name = "qwen_tts"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "accelerate-src",
  "anyhow",
@@ -2507,7 +2507,7 @@ dependencies = [
 
 [[package]]
 name = "qwen_tts_cli"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "candle-core",

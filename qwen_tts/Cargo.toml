@@ -1,6 +1,6 @@
 [package]
 name = "qwen_tts"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 description = "Qwen3-TTS text-to-speech model implementation for Candle"
 repository = "https://github.com/danielclough/qwen3-tts-rs"
