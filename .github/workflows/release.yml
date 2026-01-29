@@ -98,7 +98,7 @@ jobs:
           # Linux x86_64 with CUDA + cuDNN + flash-attn
           - os: ubuntu-22.04
             target: x86_64-unknown-linux-gnu
-            features: cuda,cudnn,flash-attn
+            features: cuda,cudnn,flash-attn,nccl,audio-loading
             install-cuda: true
             artifact-name: cli-linux-x86_64-cuda
 
@@ -118,7 +118,7 @@ jobs:
           # Windows x86_64 with CUDA + cuDNN + flash-attn
           - os: windows-latest
             target: x86_64-pc-windows-msvc
-            features: cuda,cudnn,flash-attn
+            features: cuda,cudnn,flash-attn,audio-loading
             install-cuda: true
             artifact-name: cli-windows-x86_64-cuda
 
@@ -138,7 +138,7 @@ jobs:
           # macOS Apple Silicon with Metal + Accelerate
           - os: macos-14
             target: aarch64-apple-darwin
-            features: metal,accelerate
+            features: metal,accelerate,audio-loading
             artifact-name: cli-macos-aarch64
 
     runs-on: ${{ matrix.os }}
@@ -403,7 +403,7 @@ jobs:
           path: |
             qwen-tts-*.tar.gz
             qwen-tts-*.zip
-          retention-days: 1
+          retention-days: 3
 
   # ── Stage 3: Create GitHub Release ─────────────────────────────────────
   release:
@@ -428,9 +428,14 @@ jobs:
           echo "=== Release assets ==="
           ls -la release-assets/
 
-          count=$(ls -1 release-assets/ 2>/dev/null | wc -l)
+          echo "=== SHA256 checksums ==="
+          cd release-assets
+          sha256sum * | tee ../SHA256SUMS
+          cp ../SHA256SUMS .
+
+          count=$(ls -1 . 2>/dev/null | wc -l)
           echo "asset_count=$count" >> $GITHUB_OUTPUT
-          if [ "$count" -eq 0 ]; then
+          if [ "$count" -le 1 ]; then
             echo "::warning::No release assets found"
           fi
 
@@ -448,6 +453,7 @@ jobs:
   # ── Stage 4: Publish to crates.io ──────────────────────────────────────
   publish:
     needs: [release]
+    if: success()
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -456,6 +462,8 @@ jobs:
         run: cargo publish --package qwen_tts
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+      - name: Wait for crates.io propagation
+        run: sleep 60
       - name: Publish qwen_tts_cli
         run: cargo publish --package qwen_tts_cli
         env:
