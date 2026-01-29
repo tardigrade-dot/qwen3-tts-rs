@@ -155,7 +155,7 @@ impl TokenizerV2 {
     /// # fn main() -> candle_core::Result<()> {
     /// # let device = Device::Cpu;
     /// # // tokenizer would be loaded from model files
-    /// # let mut tokenizer: qwen3_tts::audio::tokenizer::v2::TokenizerV2 = todo!();
+    /// # let mut tokenizer: qwen_tts::audio::tokenizer::v2::TokenizerV2 = todo!();
     /// let audio = Tensor::randn(0f32, 1., (1, 48000), &device)?;  // 2 seconds at 24kHz
     /// let codes = tokenizer.encode(&audio)?;  // Shape: (1, num_quantizers, seq_len)
     /// # Ok(())

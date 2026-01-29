@@ -12,9 +12,9 @@
 use candle_core::{DType, Device};
 use std::path::PathBuf;
 
-use qwen3_tts::io::{ModelArgs, model_path::get_model_path};
-use qwen3_tts::model::loader::{LoaderConfig, ModelLoader};
-use qwen3_tts::synthesis::detect_mode::DetectedMode;
+use qwen_tts::io::{ModelArgs, model_path::get_model_path};
+use qwen_tts::model::loader::{LoaderConfig, ModelLoader};
+use qwen_tts::synthesis::detect_mode::DetectedMode;
 
 /// Download model by ID using the main codebase's download logic.
 fn get_model(model_id: &str) -> PathBuf {
@@ -58,7 +58,7 @@ fn get_test_device() -> Device {
 
 mod loader_tests {
     use super::*;
-    use qwen3_tts::model::Model;
+    use qwen_tts::model::Model;
 
     /// Load a model and verify it loaded correctly.
     fn load_and_verify_model(model_id: &str, device: &Device) -> Model {
@@ -145,7 +145,7 @@ mod text_processor_tests {
     fn test_text_processor_from_pretrained() {
         let model_dir = get_model("Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice");
 
-        let processor = qwen3_tts::text::processing::TextProcessor::from_pretrained(&model_dir)
+        let processor = qwen_tts::text::processing::TextProcessor::from_pretrained(&model_dir)
             .expect("Failed to load text processor");
 
         // Test tokenization - returns Vec<u32> directly
@@ -163,7 +163,7 @@ mod text_processor_tests {
     fn test_chat_template_formatting() {
         let model_dir = get_model("Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice");
 
-        let processor = qwen3_tts::text::processing::TextProcessor::from_pretrained(&model_dir)
+        let processor = qwen_tts::text::processing::TextProcessor::from_pretrained(&model_dir)
             .expect("Failed to load text processor");
 
         // Test assistant text building
@@ -182,7 +182,7 @@ mod text_processor_tests {
     fn test_text_processor_empty_string() {
         let model_dir = get_model("Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice");
 
-        let processor = qwen3_tts::text::processing::TextProcessor::from_pretrained(&model_dir)
+        let processor = qwen_tts::text::processing::TextProcessor::from_pretrained(&model_dir)
             .expect("Failed to load text processor");
 
         // Empty string should tokenize without error
@@ -206,7 +206,7 @@ mod text_processor_tests {
     fn test_text_processor_unicode() {
         let model_dir = get_model("Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice");
 
-        let processor = qwen3_tts::text::processing::TextProcessor::from_pretrained(&model_dir)
+        let processor = qwen_tts::text::processing::TextProcessor::from_pretrained(&model_dir)
             .expect("Failed to load text processor");
 
         // Test various Unicode characters
@@ -240,7 +240,7 @@ mod text_processor_tests {
     fn test_text_processor_special_characters() {
         let model_dir = get_model("Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice");
 
-        let processor = qwen3_tts::text::processing::TextProcessor::from_pretrained(&model_dir)
+        let processor = qwen_tts::text::processing::TextProcessor::from_pretrained(&model_dir)
             .expect("Failed to load text processor");
 
         // Test special characters and punctuation
@@ -264,7 +264,7 @@ mod text_processor_tests {
     fn test_text_processor_long_input() {
         let model_dir = get_model("Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice");
 
-        let processor = qwen3_tts::text::processing::TextProcessor::from_pretrained(&model_dir)
+        let processor = qwen_tts::text::processing::TextProcessor::from_pretrained(&model_dir)
             .expect("Failed to load text processor");
 
         // Create a long input string (about 1000 words)
@@ -285,7 +285,7 @@ mod text_processor_tests {
     fn test_text_processor_whitespace_handling() {
         let model_dir = get_model("Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice");
 
-        let processor = qwen3_tts::text::processing::TextProcessor::from_pretrained(&model_dir)
+        let processor = qwen_tts::text::processing::TextProcessor::from_pretrained(&model_dir)
             .expect("Failed to load text processor");
 
         // Test various whitespace scenarios
@@ -311,7 +311,7 @@ mod text_processor_tests {
 mod tokenizer_tests {
     use super::*;
     use candle_nn::VarBuilder;
-    use qwen3_tts::audio::tokenizer::v2::{TokenizerV2, config::TokenizerV2Config};
+    use qwen_tts::audio::tokenizer::v2::{TokenizerV2, config::TokenizerV2Config};
 
     #[test]
     fn test_audio_tokenizer_decode() {
@@ -546,7 +546,7 @@ mod generation_tests {
     #[test]
     fn test_generate_voice_clone_x_vector() {
         use candle_core::Tensor;
-        use qwen3_tts::model::voice_clone::VoiceClonePromptItem;
+        use qwen_tts::model::voice_clone::VoiceClonePromptItem;
 
         let model_dir = get_model("Qwen/Qwen3-TTS-12Hz-0.6B-Base");
         let device = get_test_device();
@@ -798,7 +798,7 @@ mod error_path_tests {
     #[test]
     fn test_custom_voice_model_rejects_voice_clone_api() {
         use candle_core::Tensor;
-        use qwen3_tts::model::voice_clone::VoiceClonePromptItem;
+        use qwen_tts::model::voice_clone::VoiceClonePromptItem;
 
         let model_dir = get_model("Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice");
         let device = get_test_device();

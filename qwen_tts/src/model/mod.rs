@@ -8,7 +8,7 @@
 //! # Example
 //!
 //! ```no_run
-//! use qwen3_tts::model::loader::{ModelLoader, LoaderConfig};
+//! use qwen_tts::model::loader::{ModelLoader, LoaderConfig};
 //! use candle_core::Device;
 //!
 //! # fn main() -> Result<(), Box<dyn std::error::Error>> {

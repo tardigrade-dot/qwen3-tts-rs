@@ -2475,7 +2475,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "qwen3_tts"
+name = "qwen_tts"
 version = "0.1.0"
 dependencies = [
  "accelerate-src",
@@ -2506,7 +2506,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "qwen3_tts_cli"
+name = "qwen_tts_cli"
 version = "0.1.0"
 dependencies = [
  "anyhow",
@@ -2514,7 +2514,7 @@ dependencies = [
  "chrono",
  "clap",
  "hf-hub",
- "qwen3_tts",
+ "qwen_tts",
  "serde",
  "serde_json",
  "tracing",

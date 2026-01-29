@@ -9,7 +9,7 @@
 //!
 //! ```bash
 //! # Build the CLI (with audio-loading feature for voice cloning)
-//! cargo build --release -p qwen3_tts_cli --features audio-loading
+//! cargo build --release -p qwen_tts_cli --features audio-loading
 //!
 //! # Use default model (CustomVoice) - downloads automatically from HuggingFace
 //! qwen3-tts --text "Hello, world!" --speaker vivian
@@ -73,16 +73,16 @@ mod args;
 use anyhow::{Context, Result, bail};
 use candle_core::{DType, Device};
 use clap::Parser;
-use qwen3_tts::io::batch_items::load_batch_items;
-use qwen3_tts::io::model_path::get_model_path;
-use qwen3_tts::io::output_path::get_output_path;
-use qwen3_tts::model::loader::{LoaderConfig, ModelLoader};
-use qwen3_tts::nn::mt_rng::set_seed;
-use qwen3_tts::synthesis::detect_mode::{DetectedMode, determine_mode};
-use qwen3_tts::synthesis::synthesize_voice::{
+use qwen_tts::io::batch_items::load_batch_items;
+use qwen_tts::io::model_path::get_model_path;
+use qwen_tts::io::output_path::get_output_path;
+use qwen_tts::model::loader::{LoaderConfig, ModelLoader};
+use qwen_tts::nn::mt_rng::set_seed;
+use qwen_tts::synthesis::detect_mode::{DetectedMode, determine_mode};
+use qwen_tts::synthesis::synthesize_voice::{
     synthesize_custom_voice_item, synthesize_voice_clone_item, synthesize_voice_design_item,
 };
-use qwen3_tts::synthesis::tokenizer::{TokenizerCommand, run_tokenizer};
+use qwen_tts::synthesis::tokenizer::{TokenizerCommand, run_tokenizer};
 use std::fs;
 use std::path::PathBuf;
 
@@ -330,7 +330,7 @@ fn main() -> Result<()> {
                     );
                 }
 
-                let synth_item = qwen3_tts::io::SynthesisItem {
+                let synth_item = qwen_tts::io::SynthesisItem {
                     text: item.text.clone(),
                     language: language.to_string(),
                     output: output_path,
@@ -367,7 +367,7 @@ fn main() -> Result<()> {
                     );
                 }
 
-                let synth_item = qwen3_tts::io::SynthesisItem {
+                let synth_item = qwen_tts::io::SynthesisItem {
                     text: item.text.clone(),
                     language: language.to_string(),
                     output: output_path,
@@ -411,13 +411,13 @@ fn main() -> Result<()> {
                     );
                 }
 
-                let synth_item = qwen3_tts::io::SynthesisItem {
+                let synth_item = qwen_tts::io::SynthesisItem {
                     text: item.text.clone(),
                     language: language.to_string(),
                     output: output_path,
                 };
 
-                let clone_params = qwen3_tts::io::VoiceCloneParams {
+                let clone_params = qwen_tts::io::VoiceCloneParams {
                     ref_audio: ref_audio.clone(),
                     ref_text: ref_text.clone(),
                     x_vector_only,
@@ -450,7 +450,7 @@ fn main() -> Result<()> {
 
     // Print timing summary if timing feature is enabled
     #[cfg(feature = "timing")]
-    qwen3_tts::nn::timing::print_timings();
+    qwen_tts::nn::timing::print_timings();
 
     Ok(())
 }

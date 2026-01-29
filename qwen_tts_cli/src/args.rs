@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand};
-use qwen3_tts::io::{GenerationArgs, IoArgs, ModelArgs, SynthesisMode, VoiceArgs};
+use qwen_tts::io::{GenerationArgs, IoArgs, ModelArgs, SynthesisMode, VoiceArgs};
 use std::path::PathBuf;
 
 fn default_device() -> String {

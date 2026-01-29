@@ -40,7 +40,7 @@ impl Default for VoiceCloneConfig {
 /// # Example
 ///
 /// ```no_run
-/// use qwen3_tts::model::voice_clone::VoiceClonePromptItem;
+/// use qwen_tts::model::voice_clone::VoiceClonePromptItem;
 /// use candle_core::{Device, Tensor, DType};
 ///
 /// # fn main() -> candle_core::Result<()> {

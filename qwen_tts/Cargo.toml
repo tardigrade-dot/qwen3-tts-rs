@@ -1,9 +1,9 @@
 [package]
-name = "qwen3_tts"
+name = "qwen_tts"
 version = "0.1.0"
 edition = "2024"
 description = "Qwen3-TTS text-to-speech model implementation for Candle"
-repository = "https://github.com/danielclough/qwen3-tts"
+repository = "https://github.com/danielclough/qwen3-tts-rs"
 keywords = ["tts", "speech-synthesis", "machine-learning", "qwen"]
 categories = ["science"]
 license = "MIT OR Apache-2.0"

@@ -12,7 +12,7 @@
 //! The processor supports batch tokenization with automatic left-padding:
 //!
 //! ```no_run
-//! use qwen3_tts::text::processing::{TextProcessor, PaddingSide};
+//! use qwen_tts::text::processing::{TextProcessor, PaddingSide};
 //!
 //! # fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
 //! let processor = TextProcessor::from_file("tokenizer.json")?;
@@ -162,7 +162,7 @@ impl TextProcessor {
     ///
     /// # Example
     /// ```no_run
-    /// use qwen3_tts::text::processing::TextProcessor;
+    /// use qwen_tts::text::processing::TextProcessor;
     ///
     /// # fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     /// let processor = TextProcessor::from_pretrained("/path/to/model")?;
@@ -391,7 +391,7 @@ impl TextProcessor {
     ///
     /// # Example
     /// ```no_run
-    /// use qwen3_tts::text::processing::TextProcessor;
+    /// use qwen_tts::text::processing::TextProcessor;
     ///
     /// # fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     /// let processor = TextProcessor::from_file("path/to/tokenizer.json")?;

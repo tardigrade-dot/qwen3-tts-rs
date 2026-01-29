@@ -1,19 +1,19 @@
 [package]
-name = "qwen3_tts_cli"
+name = "qwen_tts_cli"
 version = "0.1.0"
 edition = "2024"
 description = "Command-line interface for Qwen3-TTS text-to-speech synthesis"
-repository = "https://github.com/danielclough/qwen3-tts"
+repository = "https://github.com/danielclough/qwen3-tts-rs"
 keywords = ["tts", "speech-synthesis", "cli"]
 categories = ["command-line-utilities"]
 license = "MIT OR Apache-2.0"
 
 [[bin]]
-name = "qwen3-tts"
+name = "qwen-tts"
 path = "src/main.rs"
 
 [dependencies]
-qwen3_tts = { path = "../qwen3_tts" }
+qwen_tts = { version = "0.1.0", path = "../qwen_tts" }
 candle-core = "0.9"
 clap = { version = "4", features = ["derive"] }
 anyhow = "1"
@@ -27,12 +27,12 @@ chrono = "0.4"
 
 [features]
 default = []
-accelerate = ["qwen3_tts/accelerate"]
-cuda = ["qwen3_tts/cuda"]
-cudnn = ["qwen3_tts/cudnn"]
-flash-attn = ["qwen3_tts/flash-attn"]
-mkl = ["qwen3_tts/mkl"]
-nccl = ["qwen3_tts/nccl"]
-audio-loading = ["qwen3_tts/audio-loading"]
-metal = ["qwen3_tts/metal"]
-timing = ["qwen3_tts/timing"]
+accelerate = ["qwen_tts/accelerate"]
+cuda = ["qwen_tts/cuda"]
+cudnn = ["qwen_tts/cudnn"]
+flash-attn = ["qwen_tts/flash-attn"]
+mkl = ["qwen_tts/mkl"]
+nccl = ["qwen_tts/nccl"]
+audio-loading = ["qwen_tts/audio-loading"]
+metal = ["qwen_tts/metal"]
+timing = ["qwen_tts/timing"]

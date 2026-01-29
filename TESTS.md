@@ -33,7 +33,7 @@ GPU support requires compile-time features because candle links against CUDA/Met
 ### Unit Tests (no features required)
 
 ```bash
-cargo test -p qwen3_tts
+cargo test -p qwen_tts
 ```
 
 Tests struct creation, validation, config parsing. No model downloads.
