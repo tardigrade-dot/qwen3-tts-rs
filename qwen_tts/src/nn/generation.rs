@@ -979,14 +979,13 @@ impl ConditionalGeneration {
 
             step = 1;
 
-
             #[cfg(feature = "progressbar")]
             let pb = {
                 use indicatif::{ProgressBar, ProgressStyle};
                 let pb = ProgressBar::new(max_new_tokens as u64);
                 pb.set_style(
                     ProgressStyle::default_bar()
-                        .template("{prefix} {bar:40.cyan/blue} {pos}/{len} {msg}")
+                        .template("{prefix} {bar:40.cyan/blue} {spinner} {pos} tokens [{elapsed_precise}] {per_sec} tok/s  {msg}")
                         .unwrap()
                 );
                 pb.set_prefix("TTS 任务进行中...");
