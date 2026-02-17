@@ -979,6 +979,20 @@ impl ConditionalGeneration {
 
             step = 1;
 
+
+            #[cfg(feature = "progressbar")]
+            let pb = {
+                use indicatif::{ProgressBar, ProgressStyle};
+                let pb = ProgressBar::new(max_new_tokens as u64);
+                pb.set_style(
+                    ProgressStyle::default_bar()
+                        .template("{prefix} {bar:40.cyan/blue} {pos}/{len} {msg}")
+                        .unwrap()
+                );
+                pb.set_prefix("TTS 任务进行中...");
+                pb
+            };
+
             // Continue generating with cache
             while step < max_new_tokens {
                 // Check if all samples have hit EOS
@@ -1093,6 +1107,18 @@ impl ConditionalGeneration {
                 }
 
                 step += 1;
+
+                #[cfg(feature = "progressbar")]
+                pb.inc(1);
+            }
+
+            #[cfg(feature = "progressbar")]
+            {
+                if step >= max_new_tokens{
+                    pb.finish_with_message(format!("TTS因为达到max_new_tokens[{}]步数而中止", max_new_tokens));
+                }else {
+                    pb.finish_with_message(format!("TTS任务完成, 步数{}", max_new_tokens));
+                }
             }
         }
 

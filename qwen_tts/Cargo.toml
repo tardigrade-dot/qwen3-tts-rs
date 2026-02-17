@@ -39,9 +39,13 @@ hound = "3.5"
 hf-hub = "0.4"
 safetensors = "0.7"
 bytemuck = { version = "1", features = ["derive"] }
+indicatif = { version = "0.18.4", optional = true }
 
 [features]
 default = []
+progressbar = [
+    "dep:indicatif"
+]
 accelerate = [
     "dep:accelerate-src",
     "candle-core/accelerate",
